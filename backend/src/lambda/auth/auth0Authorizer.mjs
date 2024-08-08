@@ -69,7 +69,7 @@ async function verifyToken(authHeader) {
   -----END CERTIFICATE-----`;
 
   try {
-    return jsonwebtoken.verify(token, publicKey);
+    return jsonwebtoken.verify(token, publicKey, { algorithms: ['RS256'] })
   } catch (error) {
     throw new Error('Token verification failed');
   }
