@@ -2,12 +2,13 @@ service: serverless-app-hassan
 
 plugins:
   - serverless-iam-roles-per-function
+  - serverless-reqvalidator-plugin
 
 frameworkVersion: '4'
 
 provider:
   name: aws
-  runtime: nodejs18.x
+  runtime: nodejs16.x
   region: us-east-1 # Define the default region
   stage: ${opt:stage, 'dev'}
   environment:
@@ -15,7 +16,6 @@ provider:
     TODOS_CREATED_AT_INDEX: CreatedAtIndex
     S3_BUCKET: ${self:service}-attachments-${self:provider.stage}
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
-
 
 functions:
   Auth:
@@ -46,6 +46,11 @@ functions:
           authorizer: Auth
           path: todos
           cors: true
+          request:
+            schema:
+              application/json: ${file(models/create-todo-request.json)}
+            # Reference the validator here
+            reqValidatorName: BodyValidator
     iamRoleStatements:
       - Effect: 'Allow'
         Action:
@@ -99,6 +104,16 @@ functions:
 
 resources:
   Resources:
+    # Define the request validator here
+    BodyValidator:
+      Type: 'AWS::ApiGateway::RequestValidator'
+      Properties:
+        Name: 'body-validator'
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        ValidateRequestBody: true
+        ValidateRequestParameters: false
+    
     TodosDynamoDBTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -142,16 +157,3 @@ resources:
                 - POST
                 - DELETE
               MaxAge: 3000
-    BucketPolicy:
-      Type: AWS::S3::BucketPolicy
-      Properties:
-        PolicyDocument:
-          Id: MyPolicy
-          Version: '2012-10-17'
-          Statement:
-            - Sid: PublicReadForGetBucketObjects
-              Effect: Allow
-              Principal: '*'
-              Action: 's3:GetObject'
-              Resource: 'arn:aws:s3:::${self:provider.environment.S3_BUCKET/*'
-        Bucket: !Ref AttachmentsBucket

@@ -10,7 +10,7 @@ export async function handler(event) {
     console.log('eeevent',event)
     console.log('authorization',event.authorizationToken)
     const jwtToken =  verifyToken(event.authorizationToken);
-
+    console.log("jwtTOken",jwtToken)
     return {
       principalId: jwtToken.sub,
       policyDocument: {
@@ -71,6 +71,7 @@ async function verifyToken(authHeader) {
   try {
     return jsonwebtoken.verify(token, publicKey, { algorithms: ['RS256'] })
   } catch (error) {
+    logger.error('token', error);
     throw new Error('Token verification failed');
   }
 }

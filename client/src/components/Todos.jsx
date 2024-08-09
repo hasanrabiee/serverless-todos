@@ -30,24 +30,24 @@ export function Todos() {
       <Grid padded>
         {todos?.map((todo, pos) => {
           return (
-            <Grid.Row key={todo.todoId}>
+            <Grid.Row key={todo?.todoId}>
               <Grid.Column width={1} verticalAlign="middle">
                 <Checkbox
                   onChange={() => onTodoCheck(pos)}
-                  checked={todo.done}
+                  checked={!!todo?.done}
                 />
               </Grid.Column>
               <Grid.Column width={10} verticalAlign="middle">
-                {todo.name}
+                {todo?.name}
               </Grid.Column>
               <Grid.Column width={3} floated="right">
-                {todo.dueDate}
+                {todo?.dueDate}
               </Grid.Column>
               <Grid.Column width={1} floated="right">
                 <Button
                   icon
                   color="blue"
-                  onClick={() => onEditButtonClick(todo.todoId)}
+                  onClick={() => onEditButtonClick(todo?.todoId)}
                 >
                   <Icon name="pencil" />
                 </Button>
@@ -56,13 +56,13 @@ export function Todos() {
                 <Button
                   icon
                   color="red"
-                  onClick={() => onTodoDelete(todo.todoId)}
+                  onClick={() => onTodoDelete(todo?.todoId)}
                 >
                   <Icon name="delete" />
                 </Button>
               </Grid.Column>
-              {todo.attachmentUrl && (
-                <Image src={todo.attachmentUrl} size="small" wrapped />
+              {todo?.attachmentUrl && (
+                <Image src={todo?.attachmentUrl} size="small" wrapped />
               )}
               <Grid.Column width={16}>
                 <Divider />
