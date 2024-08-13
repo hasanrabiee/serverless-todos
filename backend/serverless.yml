@@ -94,10 +94,13 @@ functions:
       - Effect: 'Allow'
         Action:
           - s3:PutObject
+        Resource: 'arn:aws:s3:::${self:provider.environment.S3_BUCKET}/*'
+      - Effect: 'Allow'
+        Action:
           - dynamodb:UpdateItem
-        Resource:
-          - 'arn:aws:s3:::${self:provider.environment.S3_BUCKET}/*'
-          - 'arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}'
+          - dynamodb:GetItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
+
 
 resources:
   Resources:
