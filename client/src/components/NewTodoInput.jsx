@@ -21,6 +21,7 @@ export function NewTodoInput({ onNewTodo }) {
         dueDate
       })
       onNewTodo(createdTodo)
+      alert('Todo creation succeed')
     } catch (e) {
       console.log('Failed to created a new TODO', e)
       alert('Todo creation failed')
