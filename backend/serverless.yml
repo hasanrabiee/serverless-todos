@@ -8,12 +8,13 @@ frameworkVersion: '4'
 provider:
   name: aws
   runtime: nodejs16.x
-  region: us-east-1 # Define the default region
+  region: us-east-1 
   stage: ${opt:stage, 'dev'}
   environment:
     TODOS_TABLE: Todos-${self:provider.stage}
     TODOS_CREATED_AT_INDEX: CreatedAtIndex
     S3_BUCKET: ${self:service}-attachments-${self:provider.stage}
+    LOGS_BUCKET: ${self:service}-logs-${self:provider.stage} 
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
 
 functions:
@@ -142,6 +143,14 @@ resources:
             Projection:
               ProjectionType: ALL
 
+    LogsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.LOGS_BUCKET}  # Bucket to store logs
+        OwnershipControls:
+          Rules:
+            - ObjectOwnership: BucketOwnerEnforced  # Enforce bucket ownership to remove the need for ACLs
+
     AttachmentsBucket:
       Type: AWS::S3::Bucket
       Properties:
@@ -158,3 +167,7 @@ resources:
                 - POST
                 - DELETE
               MaxAge: 3000
+        LoggingConfiguration:
+          DestinationBucketName: ${self:provider.environment.LOGS_BUCKET} 
+          LogFilePrefix: my-app-logs/ 
+      DependsOn: LogsBucket 

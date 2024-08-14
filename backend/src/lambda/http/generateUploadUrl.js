@@ -12,8 +12,7 @@ async function generateUploadUrlHandler(event) {
   const userId = getUserId(event);
 
   const bucketName = process.env.S3_BUCKET;
-  const urlExpiration = 30000; // URL expiration time in seconds
-
+  const urlExpiration = 60 * 60 * 24 * 16; 
   const s3Params = {
     Bucket: bucketName,
     Key: `${todoId}.jpg`, // assuming the file will be a .jpg
