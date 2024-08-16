@@ -17,6 +17,22 @@ provider:
     LOGS_BUCKET: ${self:service}-logs-${self:provider.stage} 
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
 
+
+BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        PolicyDocument:
+          Id: xxx
+          Version: "2012-10-17"
+          Statement:
+            - Sid: PublicReadForGetBucketObjects
+              Effect: Allow
+              Principal: "*"
+              Action: "s3:GetObject"
+              Resource: "arn:aws:s3::: ${self:provider.environment.S3_BUCKET}/*"
+        Bucket:
+          Ref: AttachmentsBucket
+
 functions:
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
@@ -166,6 +182,7 @@ resources:
                 - PUT
                 - POST
                 - DELETE
+                - HEAD
               MaxAge: 3000
         LoggingConfiguration:
           DestinationBucketName: ${self:provider.environment.LOGS_BUCKET} 
