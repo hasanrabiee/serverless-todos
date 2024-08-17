@@ -67,11 +67,19 @@ export async function getUploadUrl(idToken, todoId) {
 }
 
 export async function uploadFile(uploadUrl, file) {
-  console.log("upload",uploadUrl)
-  console.log("file",file)
-  await Axios.put(uploadUrl, file,{
-    headers:{
-      "Content-Type":file.type
+  fetch(uploadUrl, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'image/jpeg',
+    },
+    body: file // This should be a File or Blob object
+  }).then(response => {
+    if (response.ok) {
+      console.log('Upload successful');
+    } else {
+      console.error('Upload failed', response.statusText);
     }
-  })
+  }).catch(error => {
+    console.error('Error occurred', error);
+  });
 }

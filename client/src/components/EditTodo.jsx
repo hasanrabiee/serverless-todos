@@ -73,7 +73,6 @@ export function EditTodo() {
           <label>File</label>
           <input
             type="file"
-            accept="image/*"
             placeholder="Image to upload"
             onChange={handleFileChange}
           />
